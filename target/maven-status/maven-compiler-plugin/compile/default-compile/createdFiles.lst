@@ -1,6 +1,8 @@
-com\mycompany\agenda\EventoDAO.class
-com\mycompany\agenda\ConnectionFactory.class
-com\mycompany\agenda\Usuario.class
-com\mycompany\agenda\InsertServlet.class
-com\mycompany\agenda\UsuarioDAO.class
-com\mycompany\agenda\Evento.class
+Model\UsuarioDAO.class
+Model\ConnectionFactory.class
+Model\Usuario.class
+Controller\Busca.class
+Controller\InsertServlet.class
+Model\Evento.class
+Controller\logar.class
+Model\EventoDAO.class
