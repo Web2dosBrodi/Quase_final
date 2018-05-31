@@ -45,18 +45,18 @@ public class Busca extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //processRequest(request, response);
-        String nomeBusca = request.getParameter("busca");
+        String nomeBusca = request.getParameter("busca"); //pegar a string que o usuário pesquisou
         try {
-            List<Evento> listaEventos = null;
-            if (nomeBusca != null) {
-                listaEventos = new EventoDAO().buscaEvento(request.getParameter("busca"));
-            } else {
-                listaEventos = new EventoDAO().getListaEventos();
+            List<Evento> listaEventos = null; 
+            if (nomeBusca != null) { //se houver string
+                listaEventos = new EventoDAO().buscaEvento(request.getParameter("busca")); //busca no BD e lista os eventos correspondentes
+            } else { //se não houver string
+                listaEventos = new EventoDAO().getListaEventos(); //lista todos eventos
             }
-            request.setAttribute("listaEventos", listaEventos);
-            request.getRequestDispatcher("WEB-INF/view/indexMod.jsp").forward(request, response);
+            request.setAttribute("listaEventos", listaEventos); //define o listaEventos com a lista atual
+            request.getRequestDispatcher("WEB-INF/view/indexMod.jsp").forward(request, response); //requisição encaminhada para indexMod
             return;
-        } catch (Exception e) {
+        } catch (Exception e) { //exceção
             System.out.println("Erro ao buscar evento.");
             Logger.getLogger(Busca.class.getName()).log(Level.SEVERE, null, e);
         }

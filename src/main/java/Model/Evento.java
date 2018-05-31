@@ -21,7 +21,7 @@ public class Evento {
 
     public Evento() {
     }
-
+    //getters e setters para eventos
     public Evento(String nome, Date data, int userId) {
         this.nome = nome;
         this.data = data;

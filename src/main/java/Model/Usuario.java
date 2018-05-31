@@ -18,7 +18,7 @@ public class Usuario {
 
     public Usuario() {
     }
-
+//getters e setters para usuário
     public Usuario(String userName, String password) {
         this.userName = userName;
         this.password = password;

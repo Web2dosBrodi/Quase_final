@@ -14,38 +14,38 @@ import java.util.List;
 public class EventoDAO {
     private Connection connection;
     
-    
+    //conexão com BD
     public EventoDAO() throws ClassNotFoundException{
         this.connection = ConnectionFactory.getConnection();
     }
     
     
-    public void adicionaEvento(Evento evento){
+    public void adicionaEvento(Evento evento){ 
         String sql = "insert into evento (name_event, date, id_user)" 
-                + " VALUES (?, ?, ?)";
+                + " VALUES (?, ?, ?)"; //prepara a instrução sql
         
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
+            PreparedStatement ps = connection.prepareStatement(sql); //executa a instrução sql
             
-            ps.setString(1, evento.getNome());
-            ps.setTimestamp(2, new java.sql.Timestamp (evento.getData().getTime()));
-            ps.setLong(3, evento.getUserId());
+            ps.setString(1, evento.getNome()); //nome do evento
+            ps.setTimestamp(2, new java.sql.Timestamp (evento.getData().getTime())); //data e tempo
+            ps.setLong(3, evento.getUserId()); //idntificação do usário
             
-            ps.executeUpdate();
-            ps.close();
-        } catch (SQLException e){
+            ps.executeUpdate(); //atualiza os dados
+            ps.close(); 
+        } catch (SQLException e){ //exceção
             throw new RuntimeException (e);
         }
     }
     
-    public List<Evento> getListaEventos(){
+    public List<Evento> getListaEventos(){ //listar eventos
         try {
             List<Evento> eventos = new ArrayList<Evento>();
             
-            PreparedStatement ps = this.connection.prepareStatement("SELECT * FROM evento");
-            ResultSet rs = ps.executeQuery();
+            PreparedStatement ps = this.connection.prepareStatement("SELECT * FROM evento"); //instrução sql
+            ResultSet rs = ps.executeQuery(); //pesquisa no BD
             
-            while (rs.next()){
+            while (rs.next()){ //lista os eventos
                 Evento event = new Evento();                
                 event.setNome(rs.getString("name_event"));
                 event.setUserId(rs.getInt("id_user"));
@@ -53,20 +53,20 @@ public class EventoDAO {
                 eventos.add(event);
             }
             ps.close();
-            return eventos;
-        } catch (SQLException e) {
+            return eventos; //retorna os eventos
+        } catch (SQLException e) { //exceção
             throw new RuntimeException(e);
         }      
     }
-    public List<Evento> buscaEvento(String nomeEvento){
-        String sql = "SELECT * FROM evento WHERE name_event LIKE ?";
+    public List<Evento> buscaEvento(String nomeEvento){ //pesquisa eventos
+        String sql = "SELECT * FROM evento WHERE name_event LIKE ?"; //prepara instrução sql
         try {
-            List<Evento> eventos = new ArrayList();
-            PreparedStatement ps = this.connection.prepareStatement(sql);
-            ps.setString(1, "%" + nomeEvento + "%");
-            ResultSet rs = ps.executeQuery();
+            List<Evento> eventos = new ArrayList(); 
+            PreparedStatement ps = this.connection.prepareStatement(sql); //executa a instrução sql
+            ps.setString(1, "%" + nomeEvento + "%");  //parametros de pesquisa
+            ResultSet rs = ps.executeQuery(); //pesquisa
             
-            while (rs.next()){
+            while (rs.next()){ //compara os eventos existentes com a string de pesquisa
                 Evento event = new Evento();                
                 event.setNome(rs.getString("name_event"));
                 event.setData(rs.getDate("date"));
@@ -75,7 +75,7 @@ public class EventoDAO {
             }
             ps.close();
             return eventos;
-        } catch (SQLException e) {
+        } catch (SQLException e) { //exceção
             throw new RuntimeException(e);
         }      
     }

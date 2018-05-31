@@ -42,16 +42,16 @@ public class logar extends HttpServlet {
             throws ServletException, IOException {
 
         System.out.println("Passei: " + request.getParameter("loginIncorreto"));
-        if (request.getParameter("loginIncorreto") != null) {
+        if (request.getParameter("loginIncorreto") != null) { //se o login estiver incorreto
 
             request.setAttribute("invalido", true);
-            request.getRequestDispatcher("WEB-INF/view/login.jsp")
+            request.getRequestDispatcher("WEB-INF/view/login.jsp") //requisição encaminhada para login
                     .forward(request, response);
-        } else {
+        } else { //se não
             response.setStatus(HttpServletResponse.SC_FORBIDDEN); //comandos para logout
-            request.getSession().setAttribute("logUser", null);
+            request.getSession().setAttribute("logUser", null); //define user como null
             //request.getRequestDispatcher("WEB-INF/view/indexMod.jsp").forward(request, response);
-            response.sendRedirect("Busca");
+            response.sendRedirect("Busca"); //redireciona para busca
             return;
         }
         /*
@@ -91,44 +91,44 @@ public class logar extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        //recebe e-mail e senha do usuário
         String email = request.getParameter("email");
         String senha = request.getParameter("senha");
 
-        if (email.trim().equals("")) {
+        if (email.trim().equals("")) { //se o e-mail estiver vazio
             request.setAttribute("semEmail", true);
-            request.getRequestDispatcher("WEB-INF/view/login.jsp").forward(request, response);
+            request.getRequestDispatcher("WEB-INF/view/login.jsp").forward(request, response);//requisição encaminhada para login
             return;
 
-        } else if (senha.trim().equals("")) {
+        } else if (senha.trim().equals("")) { //se a senha estiver vazia
             request.setAttribute("semSenha", true);
-            request.getRequestDispatcher("WEB-INF/view/login.jsp").forward(request, response);
+            request.getRequestDispatcher("WEB-INF/view/login.jsp").forward(request, response); //requisição encaminhada para lgin
             return;
 
-        } else if (!email.equals("") && !senha.equals("")) {
-            Usuario usu = new Usuario(email, senha);
+        } else if (!email.equals("") && !senha.equals("")) { // se e-mail e senha forem válidos
+            Usuario usu = new Usuario(email, senha); //cria usuário
             try {
-                Usuario usuRetorno = new UsuarioDAO().logarUsuario(usu);
-                if (usuRetorno == null) {
+                Usuario usuRetorno = new UsuarioDAO().logarUsuario(usu); //busca usuário no BD
+                if (usuRetorno == null) { //se o retorno do BD for nulo
                     request.setAttribute("loginIncorreto", true);
-                    response.sendRedirect("logar?loginIncorreto=" + true);
+                    response.sendRedirect("logar?loginIncorreto=" + true); //login incorreto, redireciona para login
                     return;
-                } else {
+                } else { //se o usuário for válido
                     //System.out.println("Logou");
                     //request.getSession().setAttribute("logged", true);
                     //request.getSession().setAttribute("nomeUsuario", usuRetorno.getUserName());
                     //request.getSession().setAttribute("idUsuario", usuRetorno.getId());
-                    request.getSession().setAttribute("logUser", usuRetorno);
-                    request.getRequestDispatcher("WEB-INF/view/novoEvento.jsp").forward(request, response);
+                    request.getSession().setAttribute("logUser", usuRetorno); //retorna sessão atual e define logUser com o retorno do BD
+                    request.getRequestDispatcher("WEB-INF/view/novoEvento.jsp").forward(request, response);//requisição encaminhada para novoEvento
                     return;
                 }
-            } catch (ClassNotFoundException ex) {
+            } catch (ClassNotFoundException ex) { //exceção
                 Logger.getLogger(logar.class.getName()).log(Level.SEVERE, null, ex);
             }
-        } else {
+        } else { //se não estiver em denhuma das opções
             //response.getWriter().println("Campo não preenchido");
-            System.out.println("Nenhuma das opções de login");
-            request.getRequestDispatcher("WEB-INF/view/login.jsp").forward(request, response);
+            System.out.println("Nenhuma das opções de login"); //mensagem de erro
+            request.getRequestDispatcher("WEB-INF/view/login.jsp").forward(request, response); //requisição encaminhada para login
         }
     }
 
