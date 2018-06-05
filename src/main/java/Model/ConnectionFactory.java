@@ -14,7 +14,7 @@ public class ConnectionFactory {
 
     private ConnectionFactory() {
     }
-
+//abrir coneção com o banco de dados
     public static Connection getConnection() throws ClassNotFoundException {
         if (instancia == null) {
             try {

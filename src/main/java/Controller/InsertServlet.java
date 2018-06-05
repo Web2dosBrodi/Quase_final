@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
  * @author White
  */
 @WebServlet(urlPatterns = {"/InsertServlet"})
-public class InsertServlet extends HttpServlet {
+public class InsertServlet extends HttpServlet { //servlet
 
     boolean busca = false;
 
@@ -30,10 +30,11 @@ public class InsertServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    @Override
+    @Override //sobrescreveu o metodo service
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+            throws ServletException, IOException { //metodo responsavel por receber requisição via http
 
+<<<<<<< HEAD
         System.out.println("parameter: "+request.getParameter("logout"));
         if (request.getParameter("index") != null) {
             response.sendRedirect("Busca");
@@ -41,6 +42,29 @@ public class InsertServlet extends HttpServlet {
         } else if (request.getParameter("logout") != null) {
             response.sendRedirect("Logar");
             System.out.println("Indo deslogar");
+=======
+        HttpSession sessao = request.getSession(); //devolve a sessão do usuário atual
+        if (sessao.getAttribute("logUser") != null) { //usuário logado
+            if (request.getParameter("inserir") != null) { //se o usuario clicar em inserir
+                request.getRequestDispatcher("WEB-INF/view/novoEvento.jsp") //requisição encaminhada para novo evento
+                                                .forward(request, response);
+                return;
+            } else if (request.getParameter("index") != null) { //se o usario clicar em index
+                request.getRequestDispatcher("WEB-INF/view/indexMod.jsp") //requisição encaminhada para indexMod
+                                                .forward(request, response);
+                return;
+            } else if (request.getParameter("logout") != null) { //se o usuario clicar em logout
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN); //comandos para logout
+                sessao.setAttribute("logUser", null); //logout
+                request.getRequestDispatcher("WEB-INF/view/login.jsp") //requisição encaminhada para login
+                                                .forward(request, response);
+                return;
+            }
+        } else { //usuario não logado            
+            System.out.println("Usuario NÃO logado"); //mensagem de erro
+            request.getRequestDispatcher("WEB-INF/view/login.jsp") //requisição encaminhada para login
+                                            .forward(request, response);
+>>>>>>> c726731d0b0e4d16cec152b3dc9aa39e3a4fd84a
             return;
         } else {
             System.out.println("abrindo NovoEvento");
@@ -53,7 +77,23 @@ public class InsertServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+<<<<<<< HEAD
 
+=======
+       //recebe requisição via http
+        /*String logout = request.getParameter("logout");
+        
+        if (logout != null && logout.equals("logout")) {
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+
+            HttpSession sessao = request.getSession();
+            sessao.setAttribute("logado", null);
+            //System.out.println("Logout");
+            response.sendRedirect("InsertServlet");
+        } else {*/
+        
+        //pega os dados e cria um novo evento
+>>>>>>> c726731d0b0e4d16cec152b3dc9aa39e3a4fd84a
         String nomeEvento = request.getParameter("nomeEvento");
         int idUsuario = Integer.parseInt(request.getParameter("IdUsuario"));
         String dataForm = request.getParameter("data");
@@ -73,6 +113,7 @@ public class InsertServlet extends HttpServlet {
         Evento evento = new Evento(nomeEvento, date, idUsuario);
 
         try {
+<<<<<<< HEAD
             EventoDAO eventoDao = new EventoDAO();
             eventoDao.adicionaEvento(evento);
             request.setAttribute("adicionado", true);
@@ -81,6 +122,16 @@ public class InsertServlet extends HttpServlet {
         } catch (ClassNotFoundException ex) {
             System.err.println("Erro ao chamar InserirEvento");
             Logger.getLogger(InsertServlet.class.getName()).log(Level.SEVERE, null, ex);
+=======
+            EventoDAO eventoDao = new EventoDAO(); //chama a classe DAO que é responsavem pelo acesso ao BD
+            eventoDao.adicionaEvento(evento); //DAO para adicionar evento
+                request.setAttribute("eventoOk", true); //evento correto
+            request.getRequestDispatcher("WEB-INF/view/novoEvento.jsp").forward(request, response);//requisição encaminhada para novo evento
+            //response.sendRedirect("InsertServlet");
+        } catch (ClassNotFoundException ex) { //se houver erro
+            System.err.println("Erro ao chamar InserirEvento"); //mensagem de erro 
+            Logger.getLogger(InsertServlet.class.getName()).log(Level.SEVERE, null, ex); //exceção
+>>>>>>> c726731d0b0e4d16cec152b3dc9aa39e3a4fd84a
         }
         request.setAttribute("notAdded", true);
         request.getRequestDispatcher("WEB-INF/view/NovoEvento.jsp").forward(request, response);
@@ -95,7 +146,7 @@ public class InsertServlet extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    private Date castDate(String data) {
+    private Date castDate(String data) { //converter string data em date
         int ano = Integer.parseInt(data.substring(0, 4));
         int mes = Integer.parseInt(data.substring(5, 7)) - 1;
         int dia = Integer.parseInt(data.substring(8, 10));
@@ -113,7 +164,7 @@ public class InsertServlet extends HttpServlet {
      * @return a String containing servlet description
      */
     @Override
-    public String getServletInfo() {
+    public String getServletInfo() { 
         return "Short description";
     }// </editor-fold>
 
