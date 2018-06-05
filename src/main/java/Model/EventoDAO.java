@@ -8,12 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *
- * @author luiz-
+ * @author White
  */
 public class EventoDAO {
-    private Connection connection;
-    
+    private final Connection connection;
     
     public EventoDAO() throws ClassNotFoundException{
         this.connection = ConnectionFactory.getConnection();

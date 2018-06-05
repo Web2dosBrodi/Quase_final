@@ -3,7 +3,6 @@ package Controller;
 import Model.Evento;
 import Model.EventoDAO;
 import java.io.IOException;
-//import java.io.PrintWriter;
 import java.util.Date;
 import java.util.Calendar;
 import java.util.logging.Level;
@@ -16,7 +15,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 /**
- *
  * @author White
  */
 @WebServlet(urlPatterns = {"/InsertServlet"})
@@ -36,95 +34,57 @@ public class InsertServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        HttpSession sessao = request.getSession();
-        if (sessao.getAttribute("logUser") != null) { //usuario logado
-            if (request.getParameter("inserir") != null) {
-                request.getRequestDispatcher("WEB-INF/view/novoEvento.jsp")
-                                                .forward(request, response);
-                return;
-            } else if (request.getParameter("index") != null) {
-                request.getRequestDispatcher("WEB-INF/view/indexMod.jsp")
-                                                .forward(request, response);
-                return;
-            } else if (request.getParameter("logout") != null) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN); //comandos para logout
-                sessao.setAttribute("logUser", null);
-                request.getRequestDispatcher("WEB-INF/view/login.jsp")
-                                                .forward(request, response);
-                return;
-            }
-        } else { //usuario não logado            
-            System.out.println("Usuario NÃO logado");
-            request.getRequestDispatcher("WEB-INF/view/login.jsp")
-                                            .forward(request, response);
+        System.out.println("parameter: "+request.getParameter("logout"));
+        if (request.getParameter("index") != null) {
+            response.sendRedirect("Busca");
+            return;
+        } else if (request.getParameter("logout") != null) {
+            response.sendRedirect("Logar");
+            System.out.println("Indo deslogar");
+            return;
+        } else {
+            System.out.println("abrindo NovoEvento");
+            request.getRequestDispatcher("WEB-INF/view/NovoEvento.jsp")
+                    .forward(request, response);
             return;
         }
-        /*PrintWriter out = response.getWriter();
-        out.println("<!DOCTYPE html>");
-        out.println("<html>");
-        out.println("<head>");
-        out.println("<title>Servlet InserirConteudo</title>");
-        out.println("</head>");
-        out.println("<body>");
-        out.println("   <h1>Inserir Conteudo Web</h1>");
 
-        HttpSession sessao = request.getSession();
-        if (sessao.getAttribute("logado") != null) {
-            out.println("   <form action=\"InsertServlet\" method=\"post\">");
-            out.println("       Titulo <input type=\"text\" name=\"nomeEvento\" value=\"\"></input>");
-            out.println("       <p>Data <input type=\"date\" name=\"data\" value=\"data\"></input>");
-            out.println("       <p>Autor <input type=\"text\" name=\"nomeUsuario\" value=\""
-                    + sessao.getAttribute("nomeUsuario") + "\" disabled ></input>");
-            out.println("       <p><input type=\"hidden\" name=\"IdUsuario\" value=\""
-                    + sessao.getAttribute("idUsuario") + "\"></input>");
-            
-            out.println("       <p><input type=\"submit\" value=\"Enviar\"></input>");
-            out.println("   </form>");
-
-            out.println("   <form action=\"InsertServlet\" method=\"post\">");
-            out.println("       <input type=\"hidden\" name=\"logout\" value=\"logout\" />");
-            out.println("       <p><input type=\"submit\" value=\"Logout\"></input>");
-            out.println("   </form>");
-
-            out.println("   <form action=\"Index\" method=\"get\">");
-            out.println("       <p><input type=\"submit\" name=\"Index\" value=\"Index\"></input>");
-            out.println("   </form>");
-        } else {
-            response.sendRedirect("Login");
-        }
-        out.println("</body>");
-        out.println("</html>");*/
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        /*String logout = request.getParameter("logout");
-        
-        if (logout != null && logout.equals("logout")) {
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
-            HttpSession sessao = request.getSession();
-            sessao.setAttribute("logado", null);
-            //System.out.println("Logout");
-            response.sendRedirect("InsertServlet");
-        } else {*/
         String nomeEvento = request.getParameter("nomeEvento");
         int idUsuario = Integer.parseInt(request.getParameter("IdUsuario"));
         String dataForm = request.getParameter("data");
+        
+        if(nomeEvento == null || nomeEvento.trim().equals("")){
+            request.setAttribute("tituloVazio", true);
+            request.getRequestDispatcher("WEB-INF/view/NovoEvento.jsp").forward(request, response);
+            return;
+        }
+        if(dataForm == null || dataForm.trim().equals("")){
+            request.setAttribute("dataVazia", true);
+            request.getRequestDispatcher("WEB-INF/view/NovoEvento.jsp").forward(request, response);
+            return;
+        }
+        
         Date date = castDate(dataForm);
         Evento evento = new Evento(nomeEvento, date, idUsuario);
 
         try {
             EventoDAO eventoDao = new EventoDAO();
             eventoDao.adicionaEvento(evento);
-                request.setAttribute("eventoOk", true);
-            request.getRequestDispatcher("WEB-INF/view/novoEvento.jsp").forward(request, response);
-            //response.sendRedirect("InsertServlet");
+            request.setAttribute("adicionado", true);
+            request.getRequestDispatcher("WEB-INF/view/NovoEvento.jsp").forward(request, response);
+            return;
         } catch (ClassNotFoundException ex) {
             System.err.println("Erro ao chamar InserirEvento");
             Logger.getLogger(InsertServlet.class.getName()).log(Level.SEVERE, null, ex);
         }
-        //}
+        request.setAttribute("notAdded", true);
+        request.getRequestDispatcher("WEB-INF/view/NovoEvento.jsp").forward(request, response);
+        return;
     }
 
     /**

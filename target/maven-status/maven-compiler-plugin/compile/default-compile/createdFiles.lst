@@ -1,8 +1,10 @@
 Model\UsuarioDAO.class
+Controller\Logar.class
 Model\ConnectionFactory.class
 Model\Usuario.class
-Controller\Busca.class
 Controller\InsertServlet.class
+Filtros\I18n.class
+Controller\Busca.class
 Model\Evento.class
-Controller\logar.class
 Model\EventoDAO.class
+Filtros\User.class
